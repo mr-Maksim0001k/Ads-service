@@ -8,7 +8,7 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const doc = new UserModel({
+    const doc = new User({
       email: req.body.email,
       fullName: req.body.fullName,
       avatarUrl: req.body.avatarUrl,
@@ -43,7 +43,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
       return res.status(404).json({
@@ -88,7 +88,7 @@ export const login = async (req, res) => {
 
 export const getMe = async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId);
+    const user = await User.findById(req.userId);
 
     if (!user) {
       return res.status(404).json({
