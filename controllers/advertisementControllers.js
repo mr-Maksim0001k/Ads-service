@@ -52,6 +52,8 @@ export const getOneAdvertisement = async (req, res) => {
   try {
     const postId = req.params.id;
 
+    console.log("postId", postId);
+
     const advertisement = await Advertisement.findById(postId);
     if (!advertisement) {
       return res.status(404).json({ message: "Advertisement not found" });
