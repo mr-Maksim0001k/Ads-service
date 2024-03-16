@@ -18,5 +18,5 @@ app.listen(port, (err) => {
     console.log(err);
   }
 
-  console.log(`Сервер запущеный на порте ${port}`);
+  console.log(`The server is running on port ${port}`);
 });
