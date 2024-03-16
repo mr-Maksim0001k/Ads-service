@@ -1,4 +1,4 @@
-import { User } from "../models/user";
+import { User } from "../models/user.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось зарегистрироваться",
+      message: "Failed to register",
     });
   }
 };
@@ -49,7 +49,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "Пользователь не найден",
+        message: "User not found",
       });
     }
 
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: "Неверный логин или пароль",
+        message: "Invalid email or password",
       });
     }
 
@@ -83,28 +83,33 @@ export const login = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось авторизоваться",
+      message: "Failed to login",
     });
   }
 };
 
-export const getMe = async (req, res) => {
+export const updateUser = async (req, res) => {
   try {
-    const user = await User.findById(req.userId);
+    const userId = req.params.id;
 
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({
-        message: "Пользователь не найден",
-      });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const { passwordHash, ...userData } = user._doc;
+    user.email = req.body.email || user.email;
+    user.fullName = req.body.fullName || user.fullName;
+    user.avatarUrl = req.body.avatarUrl || user.avatarUrl;
 
-    res.json(userData);
-  } catch (err) {
-    console.log(err);
+    const updatedUser = await user.save();
+    res.json({
+      success: true,
+      updatedUser,
+    });
+  } catch (error) {
     res.status(500).json({
-      message: "Не удалось получить данные пользователя",
+      success: false,
+      error: error.message,
     });
   }
 };
